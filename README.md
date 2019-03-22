@@ -1,4 +1,4 @@
-# changelogger
+# chlogit
 
 create a changelog from git log
 
@@ -6,10 +6,10 @@ create a changelog from git log
 
 ### Install
 ```bash
-npm i changelogger
+npm i chlogit
 ```
 
 ### Run
 ```bash
-git log | changelogger > CHANGELOG.md
+git log | chlogit > CHANGELOG.md
 ```

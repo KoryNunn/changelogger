@@ -7,8 +7,15 @@
     "chlogit": "index.js"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "updateChangelog": "git log | chlogit > CHANGELOG.md && git add CHANGELOG.md"
   },
+  "pre-commit": [
+    "updateChangelog"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "pre-commit": "^1.2.2"
+  }
 }

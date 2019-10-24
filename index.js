@@ -8,9 +8,10 @@ stdin.on('data', function(chunk) {
   input += chunk;
 });
 
-var matchVersion = /^(\d\.\d\.\d)$/;
+var matchVersion = /^(\d+\.\d+\.\d+)$/;
 var matchMessage = /^\s\s\s\s(.*)/;
 var matchCommit = /^commit (.*)$/;
+var matchAuthor = /^Author: (.*) <.*$/;
 var matchDate = /^Date:\s+(\w{3} \w{3} \d+) .*? (\d{4}).*$/;
 
 function getCommits(data){
@@ -29,6 +30,7 @@ function getCommits(data){
     while(lines.length){
         var line = lines.pop();
         var commitMatch = line.match(matchCommit);
+        var authorMatch = line.match(matchAuthor);
         var messageMatch = line.match(matchMessage);
         var dateMatch = line.match(matchDate);
 
@@ -39,18 +41,27 @@ function getCommits(data){
             continue;
         }
 
-        if(dateMatch){
-            currentCommit.date = dateMatch[1] + ' ' + dateMatch[2]
-            continue
+        if(authorMatch){
+            currentCommit.author = authorMatch[1];
+            continue;
         }
 
         if(messageMatch){
             currentCommit.message = messageMatch[1];
             continue;
         }
+
+        if(dateMatch){
+            currentCommit.date = dateMatch[1] + ' ' + dateMatch[2]
+            continue
+        }
     }
 
     return commits
+}
+
+function createCommitLink(commit){
+    return `[${commit.commit.slice(0, 8)}](${commit.author}@${commit.commit})`
 }
 
 function format(){
@@ -77,7 +88,7 @@ function format(){
             continue;
         }
 
-        currentRelease.changes.push(`${commit.message} - ${commit.commit}`);
+        currentRelease.changes.push(`${commit.message} - ${createCommitLink(commit)}`);
     }
 
     var output = releases.reduce(function(result, release){
